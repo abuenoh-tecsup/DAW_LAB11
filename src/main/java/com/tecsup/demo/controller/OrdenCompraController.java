@@ -5,7 +5,9 @@ import com.tecsup.demo.model.Laboratorio;
 import com.tecsup.demo.model.OrdenCompra;
 import com.tecsup.demo.repository.LaboratorioRepository;
 import com.tecsup.demo.repository.OrdenCompraRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +24,11 @@ public class OrdenCompraController {
     @GetMapping
     public List<OrdenCompra> obtenerOrdenCompra() {
         return repo.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Optional<OrdenCompra> obtenerOrdenCompra(@PathVariable Long id) {
+        return repo.findById(id);
     }
 
     @PostMapping
@@ -43,7 +50,7 @@ public class OrdenCompraController {
     @PutMapping("/{id}")
     public OrdenCompra actualizarOrdenCompra(@RequestBody OrdenCompraRequestDTO request, @PathVariable Long id) {
         Optional<Laboratorio> laboratorioOpt = repoLab.findById(request.getCodLab());
-        if (laboratorioOpt.isPresent()) {
+        if (laboratorioOpt.isEmpty()) {
             throw new RuntimeException("Laboratorio no encontrado");
         }
 
@@ -58,8 +65,18 @@ public class OrdenCompraController {
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarOrdenCompra(@PathVariable Long id) {
+    @Transactional
+    public ResponseEntity<Void> eliminarOrdenCompra(@PathVariable Long id) {
+        if (!repo.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         repo.deleteById(id);
+
+        // Verificación manual para depuración
+        boolean existe = repo.existsById(id);
+        System.out.println("¿Todavía existe después de borrar? " + existe);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

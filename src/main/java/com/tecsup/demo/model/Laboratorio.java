@@ -29,7 +29,7 @@ public class Laboratorio {
     private String contacto;
 
     // Relación One-to-Many con OrdenCompra
-    @OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "laboratorio", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<OrdenCompra> ordenesCompra;
 
