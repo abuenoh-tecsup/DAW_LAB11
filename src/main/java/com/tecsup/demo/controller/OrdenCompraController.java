@@ -66,14 +66,7 @@ public class OrdenCompraController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarOrdenCompra(@PathVariable Long id) {
-        if (!repo.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
         repo.deleteById(id);
-
-        boolean existe = repo.existsById(id);
-        System.out.println("¿Todavía existe después de borrar? " + existe);
-
         return ResponseEntity.noContent().build();
     }
 
