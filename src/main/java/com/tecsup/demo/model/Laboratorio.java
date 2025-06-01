@@ -28,7 +28,6 @@ public class Laboratorio {
     @Column(name = "contacto")
     private String contacto;
 
-    // Relación One-to-Many con OrdenCompra
     @OneToMany(mappedBy = "laboratorio", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<OrdenCompra> ordenesCompra;

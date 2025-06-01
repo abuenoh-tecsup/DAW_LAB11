@@ -25,7 +25,6 @@ public class OrdenCompra {
     @Column(name = "nro_factura_prov")
     private String nroFacturaProv;
 
-    // Relación Many-to-One con Laboratorio
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cod_lab", nullable = false)
     private Laboratorio laboratorio;

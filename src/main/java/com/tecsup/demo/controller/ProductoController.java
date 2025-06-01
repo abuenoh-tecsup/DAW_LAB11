@@ -1,6 +1,5 @@
 package com.tecsup.demo.controller;
 
-
 import com.tecsup.demo.model.Producto;
 import com.tecsup.demo.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
