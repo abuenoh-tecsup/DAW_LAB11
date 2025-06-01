@@ -1,0 +1,65 @@
+package com.tecsup.demo.controller;
+
+import com.tecsup.demo.dto.OrdenCompraRequestDTO;
+import com.tecsup.demo.model.Laboratorio;
+import com.tecsup.demo.model.OrdenCompra;
+import com.tecsup.demo.repository.LaboratorioRepository;
+import com.tecsup.demo.repository.OrdenCompraRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/ordencompra")
+public class OrdenCompraController {
+    @Autowired
+    private OrdenCompraRepository repo;
+    @Autowired
+    private LaboratorioRepository repoLab;
+
+    @GetMapping
+    public List<OrdenCompra> obtenerOrdenCompra() {
+        return repo.findAll();
+    }
+
+    @PostMapping
+    public OrdenCompra guardarOrdenCompra(@RequestBody OrdenCompraRequestDTO request) {
+        Optional<Laboratorio> laboratorioOpt = repoLab.findById(request.getCodLab());
+        if (laboratorioOpt.isEmpty()) {
+            throw new RuntimeException("Laboratorio no encontrado");
+        }
+
+        OrdenCompra ordenCompra = new OrdenCompra();
+        ordenCompra.setFechaEmision(request.getFechaEmision());
+        ordenCompra.setSituacion(request.getSituacion());
+        ordenCompra.setTotal(request.getTotal());
+        ordenCompra.setNroFacturaProv(request.getNroFacturaProv());
+        ordenCompra.setLaboratorio(laboratorioOpt.get());
+        return repo.save(ordenCompra);
+    }
+
+    @PutMapping("/{id}")
+    public OrdenCompra actualizarOrdenCompra(@RequestBody OrdenCompraRequestDTO request, @PathVariable Long id) {
+        Optional<Laboratorio> laboratorioOpt = repoLab.findById(request.getCodLab());
+        if (laboratorioOpt.isPresent()) {
+            throw new RuntimeException("Laboratorio no encontrado");
+        }
+
+        OrdenCompra ordenCompra = new OrdenCompra();
+        ordenCompra.setNroOrdenC(id);
+        ordenCompra.setFechaEmision(request.getFechaEmision());
+        ordenCompra.setSituacion(request.getSituacion());
+        ordenCompra.setTotal(request.getTotal());
+        ordenCompra.setNroFacturaProv(request.getNroFacturaProv());
+        ordenCompra.setLaboratorio(laboratorioOpt.get());
+        return repo.save(ordenCompra);
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminarOrdenCompra(@PathVariable Long id) {
+        repo.deleteById(id);
+    }
+
+}
